@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
+import type { CreateTaskDTO, TaskDTO, UpdateTaskDTO } from './domain';
 
 @Controller('tasks')
 export class TaskController {
@@ -19,7 +20,7 @@ export class TaskController {
   }
 
   @Get(':id')
-  getTaskById(@Param('id') id: string): any {
+  getTaskById(@Param('id') id: TaskDTO['id']): any {
     if (!id || typeof id !== 'string' || id.length !== 7) {
       throw new Error('ID parameter must be a valid identifier.');
     }
@@ -34,7 +35,7 @@ export class TaskController {
   }
 
   @Post()
-  createTask(@Body() body: any): any {
+  createTask(@Body() body: CreateTaskDTO): any {
     const { title, description } = body;
 
     if (!title) {
@@ -50,7 +51,7 @@ export class TaskController {
   }
 
   @Put(':id')
-  updateTask(@Param('id') id: string, @Body() taskDTO: any): string {
+  updateTask(@Param('id') id: TaskDTO['id'], @Body() taskDTO: UpdateTaskDTO): string {
     const { title, description, completed } = taskDTO;
 
     if (!id || typeof id !== 'string' || id.length !== 7) {
@@ -77,7 +78,7 @@ export class TaskController {
   }
 
   @Delete(':id')
-  deleteTask(@Param('id') id: string): string {
+  deleteTask(@Param('id') id: TaskDTO['id']): string {
     if (!id || typeof id !== 'string' || id.length !== 7) {
       throw new Error('ID parameter must be a valid identifier.');
     }

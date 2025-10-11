@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import type { CreateTaskDTO, UpdateTaskDTO } from './domain';
 
 @Injectable()
 export class TaskService {
@@ -10,11 +11,11 @@ export class TaskService {
     return `uma task pelo id ${id}.`;
   }
 
-  createTask(task: any): any {
+  createTask(task: CreateTaskDTO): any {
     return `Task criada com ${task.title}, ${task.description}`;
   }
 
-  updateTask(id: string, task: any): any {
+  updateTask(id: string, task: UpdateTaskDTO): any {
     return `Task atualizada com ${id}, ${task.title}, ${task.description}`;
   }
 

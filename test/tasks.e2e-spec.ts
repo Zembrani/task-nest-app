@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { TaskModule } from '../src/tasks/task.module';
+import { TaskModule } from '../src/task.module';
 
 describe('TasksController (e2e)', () => {
   let app: INestApplication<App>;

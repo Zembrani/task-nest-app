@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { CreateTaskDTO, UpdateTaskDTO } from './domain';
+import type { CreateTaskDTO, UpdateTaskDTO } from '../domain/TaskDomain';
 
 @Injectable()
 export class TaskService {

@@ -3,24 +3,26 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
-import { TaskService } from '../application/task.service';
-import type { CreateTaskDTO, TaskDTO, UpdateTaskDTO } from '../domain/TaskDomain';
+import type { CreateTaskDTO, Task, UpdateTaskDTO } from '../domain/TaskDomain';
+import type { ITaskService } from 'src/application/services/ITask.service';
 
 @Controller('tasks')
 export class TaskController {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(@Inject('ITaskService') private taskService: ITaskService) {}
 
   @Get()
-  getAll(): string {
-    return this.taskService.getAll();
+  async getAll(): Promise<any> {
+      const tasks: Task[] = await this.taskService.getAll();
+      return tasks;
   }
 
   @Get(':id')
-  getTaskById(@Param('id') id: TaskDTO['id']): any {
+  async getTaskById(@Param('id') id: Task['id']): Promise<any> {
     if (!id || typeof id !== 'string' || id.length !== 7) {
       throw new Error('ID parameter must be a valid identifier.');
     }
@@ -35,7 +37,7 @@ export class TaskController {
   }
 
   @Post()
-  createTask(@Body() body: CreateTaskDTO): any {
+  async createTask(@Body() body: CreateTaskDTO): Promise<any> {
     const { title, description } = body;
 
     if (!title) {
@@ -51,7 +53,7 @@ export class TaskController {
   }
 
   @Put(':id')
-  updateTask(@Param('id') id: TaskDTO['id'], @Body() taskDTO: UpdateTaskDTO): string {
+  async updateTask(@Param('id') id: Task['id'], @Body() taskDTO: UpdateTaskDTO): Promise<any> {
     const { title, description, completed } = taskDTO;
 
     if (!id || typeof id !== 'string' || id.length !== 7) {
@@ -78,7 +80,7 @@ export class TaskController {
   }
 
   @Delete(':id')
-  deleteTask(@Param('id') id: TaskDTO['id']): string {
+  async deleteTask(@Param('id') id: Task['id']): Promise<any> {
     if (!id || typeof id !== 'string' || id.length !== 7) {
       throw new Error('ID parameter must be a valid identifier.');
     }

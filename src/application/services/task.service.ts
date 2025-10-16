@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { CreateTaskDTO, Task, UpdateTaskDTO } from '../../domain/TaskDomain';
+import { CreateTaskDTO, Task, UpdateTaskDTO } from '../../domain/TaskDomain';
 import { ITaskService } from './ITask.service';
 import type { ITaskRepository } from '../repositories/ITaskRepository';
 
@@ -26,7 +26,7 @@ export class TaskService implements ITaskService {
     return this.taskRepository.create(data);
   }
 
-  async updateTask(id: Task['id'], task: Partial<Task>): Promise<Task | null> {
+  async updateTask(id: Task['id'], task: UpdateTaskDTO): Promise<Task | null> {
         const existingTask = await this.taskRepository.getTaskById(id);
 
         if(!existingTask) {

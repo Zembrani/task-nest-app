@@ -8,7 +8,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import type { CreateTaskDTO, Task, UpdateTaskDTO } from '../domain/TaskDomain';
+import { CreateTaskDTO, Task, UpdateTaskDTO } from '../domain/TaskDomain';
 import type { ITaskService } from 'src/application/services/ITask.service';
 
 @Controller('tasks')

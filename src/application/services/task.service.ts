@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { CreateTaskDTO, Task, UpdateTaskDTO } from '../../domain/TaskDomain';
+import { Task } from '../../domain/TaskDomain';
 import { ITaskService } from './ITask.service';
 import type { ITaskRepository } from '../repositories/ITaskRepository';
 
@@ -13,7 +13,7 @@ export class TaskService implements ITaskService {
     return this.taskRepository.getAll();
   }
 
-  async getTaskById(id: Task['id']): Promise<Task | null> {
+  async getTaskById(id: string): Promise<Task | null> {
         const existingTask = await this.taskRepository.getTaskById(id);
 
         if(!existingTask) {
@@ -22,11 +22,11 @@ export class TaskService implements ITaskService {
         return existingTask;
   }
 
-  async createTask(data: CreateTaskDTO): Promise<Task> {
+  async createTask(data: Partial<Task>): Promise<Task> {
     return this.taskRepository.create(data);
   }
 
-  async updateTask(id: Task['id'], task: UpdateTaskDTO): Promise<Task | null> {
+  async updateTask(id: string, task: Partial<Task>): Promise<Task | null> {
         const existingTask = await this.taskRepository.getTaskById(id);
 
         if(!existingTask) {
@@ -36,7 +36,7 @@ export class TaskService implements ITaskService {
         return this.taskRepository.update(id, task);
   }
 
-  async deleteTask(id: Task['id']): Promise<void> {
+  async deleteTask(id: string): Promise<void> {
             const existingTask = await this.taskRepository.getTaskById(id);
 
         if(existingTask) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ITaskRepository } from '../../application/repositories/ITaskRepository';
-import { Task } from '../../domain/TaskDomain';
+import { Task  } from '../../domain/TaskDomain';
 import { TaskFactory } from '../../domain/TaskFactory';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
     return this.tasks;
   }
 
-  async create(taskData: Omit<Task, 'id' | 'completed'>): Promise<Task> {
+  async create(taskData: Partial<Task>): Promise<Task> {
     const newTask = this.taskFactory.create(taskData);
 
     this.tasks.push(newTask);
@@ -21,11 +21,11 @@ export class InMemoryTaskRepository implements ITaskRepository {
     return newTask;
   }
 
-  async getTaskById(id: Task['id']): Promise<Task | undefined> {
+  async getTaskById(id: string): Promise<Task | undefined> {
     return this.tasks.find((task) => task.id === id);
   }
 
-  async update(id: Task['id'], newTask: Partial<Task>): Promise<Task | null> {
+  async update(id: string, newTask: Partial<Task>): Promise<Task | null> {
     const taskIndex = this.tasks.findIndex(task => task.id === id);
 
     const existingTask: Task  | undefined = this.tasks[taskIndex];
@@ -40,7 +40,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
     return updatedTask;
   }
 
-  async delete(id: Task['id']): Promise<void> {
+  async delete(id: string): Promise<void> {
     const index = this.tasks.findIndex(task => task.id === id);
 
     if(index !== -1) {

@@ -10,15 +10,14 @@ import { InMemoryTaskRepository } from './infrastructure/repositories/InMemoryTa
     TaskFactory,
     {
       provide: 'ITaskService',
-      useClass: TaskService
+      useClass: TaskService,
     },
     TaskService,
     {
       provide: 'ITaskRepository',
-      useClass: InMemoryTaskRepository
+      useClass: InMemoryTaskRepository,
     },
     InMemoryTaskRepository,
   ],
 })
-
 export class TaskModule {}

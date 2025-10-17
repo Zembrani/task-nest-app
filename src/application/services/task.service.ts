@@ -6,7 +6,7 @@ import type { ITaskRepository } from '../repositories/ITaskRepository';
 @Injectable()
 export class TaskService implements ITaskService {
   constructor(
-    @Inject('ITaskRepository') private taskRepository: ITaskRepository
+    @Inject('ITaskRepository') private taskRepository: ITaskRepository,
   ) {}
 
   async getAll(): Promise<Task[]> {
@@ -14,12 +14,12 @@ export class TaskService implements ITaskService {
   }
 
   async getTaskById(id: string): Promise<Task | null> {
-        const existingTask = await this.taskRepository.getTaskById(id);
+    const existingTask = await this.taskRepository.getTaskById(id);
 
-        if(!existingTask) {
-            return null;
-        }
-        return existingTask;
+    if (!existingTask) {
+      return null;
+    }
+    return existingTask;
   }
 
   async createTask(data: Partial<Task>): Promise<Task> {
@@ -27,20 +27,20 @@ export class TaskService implements ITaskService {
   }
 
   async updateTask(id: string, task: Partial<Task>): Promise<Task | null> {
-        const existingTask = await this.taskRepository.getTaskById(id);
+    const existingTask = await this.taskRepository.getTaskById(id);
 
-        if(!existingTask) {
-            return null;
-        }
+    if (!existingTask) {
+      return null;
+    }
 
-        return this.taskRepository.update(id, task);
+    return this.taskRepository.update(id, task);
   }
 
   async deleteTask(id: string): Promise<void> {
-            const existingTask = await this.taskRepository.getTaskById(id);
+    const existingTask = await this.taskRepository.getTaskById(id);
 
-        if(existingTask) {
-            this.taskRepository.delete(id);
-        }
+    if (existingTask) {
+      await this.taskRepository.delete(id);
+    }
   }
 }

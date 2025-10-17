@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ITaskRepository } from '../../application/repositories/ITaskRepository';
-import { Task  } from '../../domain/TaskDomain';
+import { Task } from '../../domain/TaskDomain';
 import { TaskFactory } from '../../domain/TaskFactory';
 
 @Injectable()
@@ -26,25 +26,25 @@ export class InMemoryTaskRepository implements ITaskRepository {
   }
 
   async update(id: string, newTask: Partial<Task>): Promise<Task | null> {
-    const taskIndex = this.tasks.findIndex(task => task.id === id);
+    const taskIndex = this.tasks.findIndex((task) => task.id === id);
 
-    const existingTask: Task  | undefined = this.tasks[taskIndex];
+    const existingTask: Task | undefined = this.tasks[taskIndex];
 
-    if(!existingTask) {
+    if (!existingTask) {
       return null;
     }
 
-    const updatedTask: Task = {...existingTask, ...newTask};
+    const updatedTask: Task = { ...existingTask, ...newTask };
     this.tasks[taskIndex] = updatedTask;
 
     return updatedTask;
   }
 
   async delete(id: string): Promise<void> {
-    const index = this.tasks.findIndex(task => task.id === id);
+    const index = this.tasks.findIndex((task) => task.id === id);
 
-    if(index !== -1) {
-      this.tasks.splice(index,1);
+    if (index !== -1) {
+      this.tasks.splice(index, 1);
     }
   }
 }

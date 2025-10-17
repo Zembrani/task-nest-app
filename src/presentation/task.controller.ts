@@ -8,7 +8,12 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateTaskDTO, Task, TaskParamDTO, UpdateTaskDTO } from '../domain/TaskDomain';
+import {
+  CreateTaskDTO,
+  Task,
+  TaskParamDTO,
+  UpdateTaskDTO,
+} from '../domain/TaskDomain';
 import type { ITaskService } from 'src/application/services/ITask.service';
 
 @Controller('tasks')
@@ -17,13 +22,13 @@ export class TaskController {
 
   @Get()
   async getAll(): Promise<any> {
-      const tasks: Task[] = await this.taskService.getAll();
-      return tasks;
+    const tasks: Task[] = await this.taskService.getAll();
+    return tasks;
   }
 
   @Get(':id')
   async getTaskById(@Param() param: TaskParamDTO): Promise<any> {
-    const task = this.taskService.getTaskById(param.id);
+    const task = await this.taskService.getTaskById(param.id);
 
     if (!task) {
       throw new Error('Task not found.');
@@ -36,7 +41,7 @@ export class TaskController {
   async createTask(@Body() body: CreateTaskDTO): Promise<any> {
     const { title, description } = body;
 
-    const task = this.taskService.createTask({
+    const task = await this.taskService.createTask({
       title,
       description,
     });
@@ -45,11 +50,14 @@ export class TaskController {
   }
 
   @Put(':id')
-  async updateTask(@Param() param: TaskParamDTO, @Body() taskDTO: UpdateTaskDTO): Promise<any> {
+  async updateTask(
+    @Param() param: TaskParamDTO,
+    @Body() taskDTO: UpdateTaskDTO,
+  ): Promise<any> {
     const { title, description, completed } = taskDTO;
 
     const task = { title, description, completed };
-    const taskReturn = this.taskService.updateTask(param.id, task);
+    const taskReturn = await this.taskService.updateTask(param.id, task);
 
     if (!taskReturn) {
       throw new Error('Task not found.');
@@ -60,7 +68,7 @@ export class TaskController {
 
   @Delete(':id')
   async deleteTask(@Param() param: TaskParamDTO): Promise<any> {
-    this.taskService.deleteTask(param.id);
+    await this.taskService.deleteTask(param.id);
 
     return `Removeu o id ${param.id}`;
   }

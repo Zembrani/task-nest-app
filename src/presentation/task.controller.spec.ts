@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TaskController } from './task.controller';
 import { TaskService } from '../application/services/task.service';
-import { Param } from '@nestjs/common';
 
 describe('AppController', () => {
   let taskController: TaskController;
@@ -32,7 +31,9 @@ describe('AppController', () => {
         const response = 'success';
         const id = '1234567';
 
-        jest.spyOn(taskService, 'getTaskById').mockImplementation(() => response);
+        jest
+          .spyOn(taskService, 'getTaskById')
+          .mockImplementation(() => response);
         expect(taskController.getTaskById(id)).toBe(response);
       });
     });
@@ -40,9 +41,11 @@ describe('AppController', () => {
     describe('createTask', () => {
       it('should return success', () => {
         const response = 'success';
-        const task = {title: 'test', description: 'test'};
+        const task = { title: 'test', description: 'test' };
 
-        jest.spyOn(taskService, 'createTask').mockImplementation(() => response);
+        jest
+          .spyOn(taskService, 'createTask')
+          .mockImplementation(() => response);
         expect(taskController.createTask(task)).toBe(response);
       });
     });
@@ -51,9 +54,11 @@ describe('AppController', () => {
       it('should return success', () => {
         const response = 'success';
         const id = '1234567';
-        const task = {title: 'test', description: 'test'};
+        const task = { title: 'test', description: 'test' };
 
-        jest.spyOn(taskService, 'updateTask').mockImplementation(() => response);
+        jest
+          .spyOn(taskService, 'updateTask')
+          .mockImplementation(() => response);
         expect(taskController.updateTask(id, task)).toBe(response);
       });
     });
@@ -64,7 +69,9 @@ describe('AppController', () => {
         const id = '1234567';
         const deleteResponse = `Removeu o id ${id}`;
 
-        jest.spyOn(taskService, 'deleteTask').mockImplementation(() => response);
+        jest
+          .spyOn(taskService, 'deleteTask')
+          .mockImplementation(() => response);
         expect(taskController.deleteTask(id)).toBe(deleteResponse);
       });
     });

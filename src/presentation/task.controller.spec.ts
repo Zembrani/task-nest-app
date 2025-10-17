@@ -1,79 +1,104 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TaskController } from './task.controller';
-import { TaskService } from '../application/services/task.service';
+import { Task, TaskParamDTO, UpdateTaskDTO, CreateTaskDTO } from 'src/domain/TaskDomain';
+import { ITaskService } from 'src/application/services/ITask.service';
+import { NotFoundException } from '@nestjs/common';
 
-describe('AppController', () => {
+const mockTaskService = {
+  getAll: jest.fn(),
+  getTaskById: jest.fn(),
+  createTask: jest.fn(),
+  updateTask: jest.fn(),
+  deleteTask: jest.fn(),
+};
+
+describe('TaskController', () => {
   let taskController: TaskController;
-  let taskService: TaskService;
+
+  const genericTask: Task = {
+    id: '7urrt5d',
+    title: 'Title',
+    description: 'Some description',
+    completed: false,
+  };
+  const genericIdParam: TaskParamDTO = { id: '7urrt5d' };
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [TaskController],
-      providers: [TaskService],
+      providers: [
+        {
+          provide: 'ITaskService',
+          useValue: mockTaskService,
+        },
+      ],
     }).compile();
 
-    taskController = app.get<TaskController>(TaskController);
-    taskService = app.get<TaskService>(TaskService);
+    taskController = module.get<TaskController>(TaskController);
   });
 
-  describe('tasks', () => {
-    describe('getAll', () => {
-      it('should return success', () => {
-        const response = 'success';
-        jest.spyOn(taskService, 'getAll').mockImplementation(() => response);
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-        expect(taskController.getAll()).toBe(response);
-      });
+  it('should be defined', () => {
+    expect(taskController).toBeDefined();
+  });
+
+  describe('getAll', () => {
+    it('should return an array of tasks', async () => {
+      mockTaskService.getAll.mockResolvedValue([genericTask]);
+
+      const result = await taskController.getAll();
+
+      expect(result).toEqual([genericTask]);
+      expect(mockTaskService.getAll).toHaveBeenCalled();
     });
+  });
 
-    describe('getTaskById', () => {
-      it('should return success', () => {
-        const response = 'success';
-        const id = '1234567';
+  describe('getTaskById', () => {
+    it('should return a single task when found', async () => {
+      mockTaskService.getTaskById.mockResolvedValue(genericTask);
 
-        jest
-          .spyOn(taskService, 'getTaskById')
-          .mockImplementation(() => response);
-        expect(taskController.getTaskById(id)).toBe(response);
-      });
+      const result = await taskController.getTaskById(genericIdParam);
+
+      expect(result).toEqual(genericTask);
+      expect(mockTaskService.getTaskById).toHaveBeenCalledWith(genericIdParam.id);
     });
+  });
 
-    describe('createTask', () => {
-      it('should return success', () => {
-        const response = 'success';
-        const task = { title: 'test', description: 'test' };
+  describe('createTask', () => {
+    it('should create and return a task', async () => {
+        const createTaskDTO: CreateTaskDTO = { title: 'New Task', description: 'New Desc' };
+        mockTaskService.createTask.mockResolvedValue({ ...genericTask, ...createTaskDTO });
 
-        jest
-          .spyOn(taskService, 'createTask')
-          .mockImplementation(() => response);
-        expect(taskController.createTask(task)).toBe(response);
-      });
+        const result = await taskController.createTask(createTaskDTO);
+
+        expect(result.title).toBe(createTaskDTO.title);
+        expect(mockTaskService.createTask).toHaveBeenCalledWith(createTaskDTO);
     });
+  });
 
-    describe('updateTask', () => {
-      it('should return success', () => {
-        const response = 'success';
-        const id = '1234567';
-        const task = { title: 'test', description: 'test' };
+  describe('updateTask', () => {
+    it('should create and return a task', async () => {
+        const updateTaskDTO: UpdateTaskDTO = { title: 'Updated Task', description: 'Updated Desc', completed: true };
+        mockTaskService.updateTask.mockResolvedValue({ ...genericTask, ...updateTaskDTO });
 
-        jest
-          .spyOn(taskService, 'updateTask')
-          .mockImplementation(() => response);
-        expect(taskController.updateTask(id, task)).toBe(response);
-      });
+        const result = await taskController.updateTask(genericIdParam, updateTaskDTO);
+
+        expect(result.title).toBe(updateTaskDTO.title);
+        expect(mockTaskService.updateTask).toHaveBeenCalledWith(genericIdParam.id, updateTaskDTO);
     });
+  });
 
-    describe('deleteTask', () => {
-      it('should return success', () => {
-        const response = 'success';
-        const id = '1234567';
-        const deleteResponse = `Removeu o id ${id}`;
+  describe('deleteTask', () => {
+    it('should create and return a task', async () => {
+        mockTaskService.deleteTask.mockResolvedValue(null);
 
-        jest
-          .spyOn(taskService, 'deleteTask')
-          .mockImplementation(() => response);
-        expect(taskController.deleteTask(id)).toBe(deleteResponse);
-      });
+        const result = await taskController.deleteTask(genericIdParam);
+
+        expect(result).toBe(`Removeu o id ${genericIdParam.id}`);
+        expect(mockTaskService.deleteTask).toHaveBeenCalledWith(genericIdParam.id);
     });
   });
 });

@@ -21,13 +21,13 @@ export class TaskController {
   constructor(@Inject('ITaskService') private taskService: ITaskService) {}
 
   @Get()
-  async getAll(): Promise<any> {
+  async getAll(): Promise<Task[]> {
     const tasks: Task[] = await this.taskService.getAll();
     return tasks;
   }
 
   @Get(':id')
-  async getTaskById(@Param() param: TaskParamDTO): Promise<any> {
+  async getTaskById(@Param() param: TaskParamDTO): Promise<Task> {
     const task = await this.taskService.getTaskById(param.id);
 
     if (!task) {
@@ -38,7 +38,7 @@ export class TaskController {
   }
 
   @Post()
-  async createTask(@Body() body: CreateTaskDTO): Promise<any> {
+  async createTask(@Body() body: CreateTaskDTO): Promise<Task> {
     const { title, description } = body;
 
     const task = await this.taskService.createTask({
@@ -53,7 +53,7 @@ export class TaskController {
   async updateTask(
     @Param() param: TaskParamDTO,
     @Body() taskDTO: UpdateTaskDTO,
-  ): Promise<any> {
+  ): Promise<Task> {
     const { title, description, completed } = taskDTO;
 
     const task = { title, description, completed };
@@ -67,7 +67,7 @@ export class TaskController {
   }
 
   @Delete(':id')
-  async deleteTask(@Param() param: TaskParamDTO): Promise<any> {
+  async deleteTask(@Param() param: TaskParamDTO): Promise<string> {
     await this.taskService.deleteTask(param.id);
 
     return `Removeu o id ${param.id}`;

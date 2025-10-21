@@ -1,4 +1,3 @@
-import { OmitType } from '@nestjs/mapped-types';
 import {
   IsAlphanumeric,
   IsBoolean,
@@ -8,19 +7,9 @@ import {
 } from 'class-validator';
 
 export class Task {
-  @IsString()
-  @IsAlphanumeric()
-  @IsByteLength(7, 7)
-  @IsDefined()
   id: string;
-  @IsString()
-  @IsDefined()
   title: string;
-  @IsString()
-  @IsDefined()
   description: string;
-  @IsBoolean()
-  @IsDefined()
   completed: boolean;
 }
 
@@ -32,8 +21,17 @@ export class TaskParamDTO {
   id: string;
 }
 
-export class CreateTaskDTO extends OmitType(Task, [
-  'id',
-  'completed',
-] as const) {}
-export class UpdateTaskDTO extends OmitType(Task, ['id'] as const) {}
+export class CreateTaskDTO {
+  @IsString()
+  @IsDefined()
+  title: string;
+  @IsString()
+  @IsDefined()
+  description: string;
+}
+
+export class UpdateTaskDTO extends CreateTaskDTO {
+  @IsBoolean()
+  @IsDefined()
+  completed: boolean;
+}

@@ -3,7 +3,7 @@ import { Task } from '../../domain/TaskDomain';
 import { ITaskService } from './ITask.service';
 import type { ITaskRepository } from '../repositories/ITaskRepository';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { TaskCreatedEventPayload } from 'src/domain/events/TaskCreatedEvent';
+import { TaskEvents } from 'src/domain/events/event.constants';
 
 @Injectable()
 export class TaskService implements ITaskService {
@@ -28,13 +28,7 @@ export class TaskService implements ITaskService {
   async createTask(data: Partial<Task>): Promise<Task> {
     const createdTask = await this.taskRepository.create(data);
 
-    const payload = new TaskCreatedEventPayload();
-    payload.id = createdTask.id;
-    payload.title = createdTask.title;
-    payload.description = createdTask.description;
-    payload.completed = createdTask.completed;
-
-    this.eventEmitter.emit('task.created', payload);
+    this.eventEmitter.emit(TaskEvents.CREATED, createdTask);
 
     return createdTask;
   }
@@ -46,11 +40,16 @@ export class TaskService implements ITaskService {
       return null;
     }
 
-    return this.taskRepository.update(id, task);
+    const updatedTask = await this.taskRepository.update(id, task);
+
+    this.eventEmitter.emit(TaskEvents.UPDATED, updatedTask);
+    return updatedTask;
   }
 
   async deleteTask(id: string): Promise<void> {
     const existingTask = await this.taskRepository.getTaskById(id);
+
+    this.eventEmitter.emit(TaskEvents.DELETED, { id });
 
     if (existingTask) {
       await this.taskRepository.delete(id);

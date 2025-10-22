@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Inject,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -31,7 +32,7 @@ export class TaskController {
     const task = await this.taskService.getTaskById(param.id);
 
     if (!task) {
-      throw new Error('Task not found.');
+      throw new NotFoundException('Task not found.');
     }
 
     return task;
@@ -60,7 +61,7 @@ export class TaskController {
     const taskReturn = await this.taskService.updateTask(param.id, task);
 
     if (!taskReturn) {
-      throw new Error('Task not found.');
+      throw new NotFoundException('Task not found.');
     }
 
     return taskReturn;

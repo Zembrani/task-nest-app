@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:latest
+
+    # Restarts the container automatically if it crashes.
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres # The default superuser
+      POSTGRES_PASSWORD: tasknest # Set your local password
+      POSTGRES_DB: tasks # The name of the database you want to create
+
+    # Format: <host-port>:<container-port>
+    ports:
+      - '5432:5432'
+
+    volumes:
+      - postgres-data:/var/lib/postgresql
+
+volumes:
+  postgres-data:

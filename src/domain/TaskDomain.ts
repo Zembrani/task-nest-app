@@ -4,6 +4,7 @@ import {
   IsByteLength,
   IsDefined,
   IsString,
+  IsUUID,
 } from 'class-validator';
 
 export class Task {
@@ -14,9 +15,7 @@ export class Task {
 }
 
 export class TaskParamDTO {
-  @IsString()
-  @IsAlphanumeric()
-  @IsByteLength(7, 7)
+  @IsUUID()
   @IsDefined()
   id: string;
 }

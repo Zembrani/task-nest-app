@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TaskController } from './presentation/task.controller';
 import { TaskService } from './application/services/task.service';
-import { TaskFactory } from './domain/TaskFactory';
-import { InMemoryTaskRepository } from './infrastructure/repositories/InMemoryTaskRepository';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TaskCreatedListener } from './application/listeners/TaskCreated.listener';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TaskEntity } from './infrastructure/database/task.entity';
+import { PostgresTaskRepository } from './infrastructure/repositories/PostgresTaskRepository';
 
 @Module({
   controllers: [TaskController],
   providers: [
-    TaskFactory,
     {
       provide: 'ITaskService',
       useClass: TaskService,
@@ -17,11 +17,24 @@ import { TaskCreatedListener } from './application/listeners/TaskCreated.listene
     TaskService,
     {
       provide: 'ITaskRepository',
-      useClass: InMemoryTaskRepository,
+      useClass: PostgresTaskRepository,
     },
-    InMemoryTaskRepository,
+    PostgresTaskRepository,
     TaskCreatedListener,
   ],
-  imports: [EventEmitterModule.forRoot()],
+  imports: [
+    EventEmitterModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'tasknest',
+      database: 'tasks',
+      synchronize: true,
+      entities: [TaskEntity],
+    }),
+    TypeOrmModule.forFeature([TaskEntity]),
+  ],
 })
 export class TaskModule {}

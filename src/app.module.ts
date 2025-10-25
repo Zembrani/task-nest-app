@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TaskController } from './presentation/task.controller';
 import { TaskService } from './application/services/task.service';
-import { EventEmitterModule } from '@nestjs/event-emitter';
-import { TaskCreatedListener } from './application/listeners/TaskCreated.listener';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskEntity } from './infrastructure/database/task.entity';
 import { PostgresTaskRepository } from './infrastructure/repositories/PostgresTaskRepository';
+import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
+import { RabbitmqSubscriber } from './application/queue/RabbitmqSub';
 
 @Module({
   controllers: [TaskController],
@@ -20,10 +20,9 @@ import { PostgresTaskRepository } from './infrastructure/repositories/PostgresTa
       useClass: PostgresTaskRepository,
     },
     PostgresTaskRepository,
-    TaskCreatedListener,
+    RabbitmqSubscriber
   ],
   imports: [
-    EventEmitterModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -35,6 +34,16 @@ import { PostgresTaskRepository } from './infrastructure/repositories/PostgresTa
       entities: [TaskEntity],
     }),
     TypeOrmModule.forFeature([TaskEntity]),
+    RabbitMQModule.forRoot({
+          exchanges: [
+            {
+              name: 'task_exchange',
+              type: 'topic',
+            },
+          ],
+          uri: 'amqp://localhost:5672',
+          connectionInitOptions: { wait: false },
+        }),
   ],
 })
 export class TaskModule {}

@@ -31,7 +31,7 @@ import { RabbitmqSubscriber } from './application/queue/RabbitmqSub';
       password: 'tasknest',
       database: 'tasks',
       synchronize: true,
-      entities: [TaskEntity],
+      autoLoadEntities: true
     }),
     TypeOrmModule.forFeature([TaskEntity]),
     RabbitMQModule.forRoot({
@@ -39,10 +39,11 @@ import { RabbitmqSubscriber } from './application/queue/RabbitmqSub';
             {
               name: 'task_exchange',
               type: 'topic',
+              options: { durable: true }
             },
           ],
           uri: 'amqp://guest:guest@localhost:5672',
-          connectionInitOptions: { wait: false },
+          connectionInitOptions: { wait: true, timeout: 5000 },
         }),
   ],
 })

@@ -36,7 +36,12 @@ export class TaskService implements ITaskService {
     try {
       const payload = new TaskCreatedEvent(createdTask);
 
-      this.amqpConnection.publish('task_exchange', TaskEvents.CREATED, payload);
+      this.amqpConnection.publish(
+        'task_exchange',
+        TaskEvents.CREATED,
+        payload,
+        { persistent: true },
+      );
     } catch (error) {
       console.error(`[Service] Error publishing ${TaskEvents.CREATED}:`, error);
     }
@@ -62,7 +67,12 @@ export class TaskService implements ITaskService {
         before: existingTask,
         after: updatedTask,
       });
-      this.amqpConnection.publish('task_exchange', TaskEvents.UPDATED, payload);
+      this.amqpConnection.publish(
+        'task_exchange',
+        TaskEvents.UPDATED,
+        payload,
+        { persistent: true },
+      );
     } catch (error) {
       console.error(`[Service] Error publishing ${TaskEvents.UPDATED}:`, error);
     }
@@ -79,7 +89,12 @@ export class TaskService implements ITaskService {
 
     try {
       const payload = new TaskDeletedEvent({ id });
-      this.amqpConnection.publish('task_exchange', TaskEvents.DELETED, payload);
+      this.amqpConnection.publish(
+        'task_exchange',
+        TaskEvents.DELETED,
+        payload,
+        { persistent: true },
+      );
     } catch (error) {
       console.error(`[Service] Error publishing ${TaskEvents.DELETED}:`, error);
     }

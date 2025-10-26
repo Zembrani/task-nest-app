@@ -20,7 +20,7 @@ import { RabbitmqSubscriber } from './application/queue/RabbitmqSub';
       useClass: PostgresTaskRepository,
     },
     PostgresTaskRepository,
-    RabbitmqSubscriber
+    RabbitmqSubscriber,
   ],
   imports: [
     TypeOrmModule.forRoot({
@@ -31,20 +31,20 @@ import { RabbitmqSubscriber } from './application/queue/RabbitmqSub';
       password: 'tasknest',
       database: 'tasks',
       synchronize: true,
-      autoLoadEntities: true
+      autoLoadEntities: true,
     }),
     TypeOrmModule.forFeature([TaskEntity]),
     RabbitMQModule.forRoot({
-          exchanges: [
-            {
-              name: 'task_exchange',
-              type: 'topic',
-              options: { durable: true }
-            },
-          ],
-          uri: 'amqp://guest:guest@localhost:5672',
-          connectionInitOptions: { wait: true, timeout: 5000 },
-        }),
+      exchanges: [
+        {
+          name: 'task_exchange',
+          type: 'topic',
+          options: { durable: true },
+        },
+      ],
+      uri: 'amqp://guest:guest@localhost:5672',
+      connectionInitOptions: { wait: true, timeout: 5000 },
+    }),
   ],
 })
 export class TaskModule {}

@@ -41,7 +41,7 @@ import { RabbitmqSubscriber } from './application/queue/RabbitmqSub';
               type: 'topic',
             },
           ],
-          uri: 'amqp://localhost:5672',
+          uri: 'amqp://guest:guest@localhost:5672',
           connectionInitOptions: { wait: false },
         }),
   ],

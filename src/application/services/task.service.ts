@@ -3,6 +3,12 @@ import { Task } from '../../domain/TaskDomain';
 import { ITaskService } from './ITask.service';
 import type { ITaskRepository } from '../repositories/ITaskRepository';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { TaskEvents } from 'src/domain/events/event.constants';
+import {
+  TaskCreatedEvent,
+  TaskDeletedEvent,
+  TaskUpdatedEvent,
+} from 'src/domain/events/task-event/task-event';
 
 @Injectable()
 export class TaskService implements ITaskService {
@@ -27,11 +33,13 @@ export class TaskService implements ITaskService {
   async createTask(data: Partial<Task>): Promise<Task> {
     const createdTask = await this.taskRepository.create(data);
 
-    this.amqpConnection.publish(
-      'task_queue',
-      'rpc-route',
-      'Task Created',
-    );
+    try {
+      const payload = new TaskCreatedEvent(createdTask);
+
+      this.amqpConnection.publish('task_exchange', TaskEvents.CREATED, payload);
+    } catch (error) {
+      console.error(`[Service] Error publishing ${TaskEvents.CREATED}:`, error);
+    }
 
     return createdTask;
   }
@@ -45,6 +53,20 @@ export class TaskService implements ITaskService {
 
     const updatedTask = await this.taskRepository.update(id, task);
 
+    try {
+      if (!updatedTask) {
+        throw new Error('Updated task is null');
+      }
+
+      const payload = new TaskUpdatedEvent({
+        before: existingTask,
+        after: updatedTask,
+      });
+      this.amqpConnection.publish('task_exchange', TaskEvents.UPDATED, payload);
+    } catch (error) {
+      console.error(`[Service] Error publishing ${TaskEvents.UPDATED}:`, error);
+    }
+
     return updatedTask;
   }
 
@@ -53,6 +75,13 @@ export class TaskService implements ITaskService {
 
     if (existingTask) {
       await this.taskRepository.delete(id);
+    }
+
+    try {
+      const payload = new TaskDeletedEvent({ id });
+      this.amqpConnection.publish('task_exchange', TaskEvents.DELETED, payload);
+    } catch (error) {
+      console.error(`[Service] Error publishing ${TaskEvents.DELETED}:`, error);
     }
   }
 }

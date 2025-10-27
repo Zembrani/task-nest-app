@@ -1,11 +1,11 @@
 import { Nack, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
-import { TaskEvents } from '../../domain/events/event.constants';
+import { TaskEvents } from '../../../libs/shared/src/domain/events/event.constants';
 import {
   TaskCreatedEvent,
   TaskDeletedEvent,
   TaskUpdatedEvent,
-} from '../../domain/events/task-event/task-event';
+} from '../../../libs/shared/src/domain/events/task-event/task-event';
 
 @Injectable()
 export class RabbitmqSubscriber {

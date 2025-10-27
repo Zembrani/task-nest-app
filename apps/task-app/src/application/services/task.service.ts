@@ -1,14 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Task } from '../../domain/TaskDomain';
+import { Task } from '../../../../../libs/shared/src/domain/TaskDomain';
 import { ITaskService } from './ITask.service';
 import type { ITaskRepository } from '../repositories/ITaskRepository';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { TaskEvents } from '../../domain/events/event.constants';
+import { TaskEvents } from '../../../../../libs/shared/src/domain/events/event.constants';
 import {
   TaskCreatedEvent,
   TaskDeletedEvent,
   TaskUpdatedEvent,
-} from '../../domain/events/task-event/task-event';
+} from '../../../../../libs/shared/src/domain/events/task-event/task-event';
 
 @Injectable()
 export class TaskService implements ITaskService {

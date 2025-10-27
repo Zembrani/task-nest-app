@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ITaskRepository } from '../../application/repositories/ITaskRepository';
-import { Task } from '../../domain/TaskDomain';
+import { Task } from '../../../../../libs/shared/src/domain/TaskDomain';
 import { TaskFactory } from '../../domain/TaskFactory';
 
 @Injectable()

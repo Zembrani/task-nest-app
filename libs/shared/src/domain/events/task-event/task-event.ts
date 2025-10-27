@@ -1,4 +1,4 @@
-import { Task } from './../../TaskDomain';
+import { Task } from '../../TaskDomain';
 
 export class BaseEvent {
   public readonly id: string;

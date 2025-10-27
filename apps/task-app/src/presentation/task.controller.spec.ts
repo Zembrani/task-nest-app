@@ -5,7 +5,7 @@ import {
   TaskParamDTO,
   UpdateTaskDTO,
   CreateTaskDTO,
-} from '../domain/TaskDomain';
+} from '../../../../libs/shared/src/domain/TaskDomain';
 
 const mockTaskService = {
   getAll: jest.fn(),

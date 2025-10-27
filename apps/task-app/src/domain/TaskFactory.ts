@@ -1,4 +1,4 @@
-import { Task } from './TaskDomain';
+import { Task } from '../../../../libs/shared/src/domain/TaskDomain';
 
 export class TaskFactory {
   create(task: Partial<Task>): Task {

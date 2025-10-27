@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskEntity } from './infrastructure/database/task.entity';
 import { PostgresTaskRepository } from './infrastructure/repositories/PostgresTaskRepository';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
-import { RabbitmqSubscriber } from '../../notification/src/rabbitmq.subscriber';
 
 @Module({
   controllers: [TaskController],
@@ -20,7 +19,6 @@ import { RabbitmqSubscriber } from '../../notification/src/rabbitmq.subscriber';
       useClass: PostgresTaskRepository,
     },
     PostgresTaskRepository,
-    RabbitmqSubscriber,
   ],
   imports: [
     TypeOrmModule.forRoot({

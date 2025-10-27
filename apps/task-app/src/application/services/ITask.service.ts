@@ -1,4 +1,4 @@
-import { Task } from 'src/domain/TaskDomain';
+import { Task } from '../../domain/TaskDomain';
 
 export interface ITaskService {
   getAll(): Promise<Task[]>;

@@ -5,9 +5,7 @@ import {
   TaskParamDTO,
   UpdateTaskDTO,
   CreateTaskDTO,
-} from 'src/domain/TaskDomain';
-import { ITaskService } from 'src/application/services/ITask.service';
-import { NotFoundException } from '@nestjs/common';
+} from '../domain/TaskDomain';
 
 const mockTaskService = {
   getAll: jest.fn(),

@@ -1,7 +1,5 @@
 import {
-  IsAlphanumeric,
   IsBoolean,
-  IsByteLength,
   IsDefined,
   IsString,
   IsUUID,

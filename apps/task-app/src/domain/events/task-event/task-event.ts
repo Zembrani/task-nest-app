@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { Task } from 'src/domain/TaskDomain';
+import { Task } from './../../TaskDomain';
 
 export class BaseEvent {
   public readonly id: string;

@@ -28,13 +28,13 @@
         "tsConfigPath": "libs/shared/tsconfig.lib.json"
       }
     },
-    "task-app": {
+    "src": {
       "type": "application",
       "root": "apps/task-app",
       "entryFile": "main",
       "sourceRoot": "apps/task-app/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/task-app/tsconfig.app.json"
+        "tsConfigPath": "apps/task-app/src/tsconfig.app.json"
       }
     }
   }

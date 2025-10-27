@@ -3,12 +3,12 @@ import { Task } from '../../domain/TaskDomain';
 import { ITaskService } from './ITask.service';
 import type { ITaskRepository } from '../repositories/ITaskRepository';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { TaskEvents } from 'src/domain/events/event.constants';
+import { TaskEvents } from '../../domain/events/event.constants';
 import {
   TaskCreatedEvent,
   TaskDeletedEvent,
   TaskUpdatedEvent,
-} from 'src/domain/events/task-event/task-event';
+} from '../../domain/events/task-event/task-event';
 
 @Injectable()
 export class TaskService implements ITaskService {

@@ -4,8 +4,8 @@ import {
   TaskCreatedEvent,
   TaskDeletedEvent,
   TaskUpdatedEvent,
-} from 'src/domain/events/task-event/task-event';
-import { Task } from 'src/domain/TaskDomain';
+} from '../../domain/events/task-event/task-event';
+import { Task } from '../../domain/TaskDomain';
 
 @Injectable()
 export class TaskCreatedListener {

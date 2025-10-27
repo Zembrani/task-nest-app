@@ -15,7 +15,7 @@ import {
   TaskParamDTO,
   UpdateTaskDTO,
 } from '../domain/TaskDomain';
-import type { ITaskService } from 'src/application/services/ITask.service';
+import type { ITaskService } from '../application/services/ITask.service';
 
 @Controller('tasks')
 export class TaskController {

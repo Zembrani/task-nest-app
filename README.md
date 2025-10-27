@@ -1,98 +1,217 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+Task Management API - Event-Driven Microservices with Nest.js
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project demonstrates a robust backend system built using a modern technology stack, focusing on Clean Architecture, Domain-Driven Design (DDD), and event-driven communication between microservices. It features a Task Management API (task-app) that communicates asynchronously with a simple Notification service (notification) via RabbitMQ.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+✨ Key Concepts & Features Demonstrated
 
-## Description
+This project serves as a practical example of implementing several advanced backend concepts:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Microservices Architecture: Two distinct Nest.js applications (task-app and notification) running independently.
 
-## Project setup
+Clean Architecture: Strict separation of concerns into Domain, Application, Infrastructure, and Presentation layers, promoting maintainability and testability.
 
-```bash
-$ pnpm install
-```
+Domain-Driven Design (DDD):
 
-## Compile and run the project
+Bounded Contexts: Each microservice represents a distinct Bounded Context (Task Management, Notifications).
 
-```bash
-# development
-$ pnpm run start
+Ubiquitous Language: Consistent terminology used across the codebase (e.g., Task, TaskCreatedEvent).
 
-# watch mode
-$ pnpm run start:dev
+Entities: Task as the core domain entity.
 
-# production mode
-$ pnpm run start:prod
-```
+Repositories: Abstracting data persistence (ITaskRepository).
 
-## Run tests
+Domain Events: Modeling significant business occurrences (TaskCreatedEvent, TaskUpdatedEvent, TaskDeletedEvent) for asynchronous communication.
 
-```bash
-# unit tests
-$ pnpm run test
+Event-Driven Communication: Utilizing RabbitMQ as a message broker for decoupled, asynchronous communication between the task-app (Producer) and notification app (Consumer).
 
-# e2e tests
-$ pnpm run test:e2e
+Nest.js Framework: Leveraging Nest.js modules, dependency injection, controllers, services, pipes, and lifecycle hooks for a structured and scalable application.
 
-# test coverage
-$ pnpm run test:cov
-```
+TypeORM & PostgreSQL: Implementing data persistence using TypeORM entities and repositories, connected to a PostgreSQL database.
 
-## Deployment
+API Validation: Robust request validation using class-validator and Nest.js ValidationPipe for both request bodies and URL parameters (DTOs).
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Unit Testing: Isolated unit tests for the controller layer using Jest and Nest.js testing utilities, mocking dependencies effectively.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Docker Compose: Simplified setup and management of external services (PostgreSQL, RabbitMQ) for local development.
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+TypeScript: Leveraging strong typing for improved code quality and maintainability.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+🏛️ Architecture Overview
 
-## Resources
+The system consists of two main services orchestrated by Docker Compose:
 
-Check out a few resources that may come in handy when working with NestJS:
+task-app (Port 3000):
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+A Nest.js application providing a REST API for CRUD operations on Tasks.
 
-## Support
+Follows Clean Architecture principles.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Persists data to the PostgreSQL database via TypeORM.
 
-## Stay in touch
+Acts as a Producer: Publishes domain events (TaskCreated, TaskUpdated, TaskDeleted) to the task_exchange in RabbitMQ.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+notification (Port 3001):
 
-## License
+A lightweight Nest.js application.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Acts as a Consumer: Subscribes to specific routing keys on the task_exchange in RabbitMQ.
+
+Listens for task-related events and logs a message to the console (simulating a notification action).
+
+RabbitMQ:
+
+Message broker handling the asynchronous communication between services via the task_exchange.
+
+PostgreSQL:
+
+Relational database storing the task data for the task-app.
+
+🛠️ Technologies Used
+
+Framework: Nest.js (^11.x)
+
+Language: TypeScript (^5.x)
+
+Database: PostgreSQL (via Docker)
+
+ORM: TypeORM (^0.3.x)
+
+Message Broker: RabbitMQ (via Docker, using @golevelup/nestjs-rabbitmq)
+
+Validation: class-validator, class-transformer
+
+Testing: Jest (^30.x), Supertest
+
+Containerization: Docker, Docker Compose
+
+API Client: Postman, Insomnia
+
+🏗️ Project Structure
+
+This project follows a Nest.js monorepo structure:
+
+├── apps/
+│   ├── task-app/         # Task Management microservice
+│   │   ├── src/
+│   │   │   ├── application/  # Services, Repositories (Interfaces), Listeners (Removed)
+│   │   │   ├── domain/       # Core Entities, Domain Events (Moved to Libs)
+│   │   │   ├── infrastructure/ # DB Entities, Repositories (Impl), Messaging (Config)
+│   │   │   └── presentation/   # Controllers, Modules
+│   │   └── ...
+│   └── notification/     # Notification microservice
+│       ├── src/
+│       │   ├── listeners/    # RabbitMQ Subscriber logic
+│       │   └── ...           # main.ts, module, etc.
+│       └── ...
+├── libs/
+│   └── shared/           # Shared code (interfaces, DTOs, events) between services
+│       └── src/
+│           ├── domain/
+│           │   ├── events/   # Event definitions (constants, classes)
+│           │   └── TaskDomain.ts # Task interface/class, DTOs
+│           └── ...
+├── docker-compose.yml    # Docker setup for Postgres & RabbitMQ
+├── package.json
+└── tsconfig.json
+
+
+🚀 Getting Started
+
+Prerequisites
+
+Node.js (v18 or higher recommended)
+
+npm or yarn
+
+Docker & Docker Compose
+
+Installation & Setup
+
+Clone the repository:
+
+git clone [https://github.com/Zembrani/task-nest-app.git](https://github.com/Zembrani/task-nest-app.git)
+cd task-nest-app
+
+
+Install dependencies:
+
+npm install
+# or
+yarn install
+
+
+Start external services (Database & Message Broker):
+
+docker-compose up -d
+
+
+This will start PostgreSQL and RabbitMQ containers in the background. You can access the RabbitMQ Management UI at http://localhost:15672 (login: guest/guest).
+
+Running the Application (Development)
+
+You need to run both microservices simultaneously in separate terminals:
+
+Terminal 1 (Start Task Service):
+
+npm run start:dev:task
+
+
+This will start the task-app on http://localhost:3000.
+
+Terminal 2 (Start Notification Service):
+
+npm run start:dev:notification
+
+
+This will start the notification app on http://localhost:3001.
+
+Wait for both applications to show that they have successfully connected to RabbitMQ.
+
+✅ Running Tests
+
+To run the unit tests for the task-app controller:
+
+npm run test apps/task-app/src/presentation/task.controller.spec.ts
+# Or run all tests defined in jest config
+# npm test
+
+
+🔌 API Endpoints (task-app on Port 3000)
+
+GET /tasks: Get all tasks.
+
+GET /tasks/:id: Get a single task by its UUID.
+
+POST /tasks: Create a new task.
+
+Body: { "title": "string", "description": "string" }
+
+Triggers task.created event.
+
+PUT /tasks/:id: Update an existing task.
+
+Body: { "title"?: "string", "description"?: "string", "completed"?: boolean } (At least one field required)
+
+Triggers task.updated event.
+
+DELETE /tasks/:id: Delete a task.
+
+Triggers task.deleted event.
+
+(Note: When triggering POST, PUT, or DELETE, check the console output of the notification service running on port 3001 to see the event being consumed).
+
+💡 Future Enhancements (Ideas)
+
+Implement Authentication/Authorization (e.g., JWT).
+
+Add more complex business logic to the Domain Entities.
+
+Introduce Kafka as an alternative/additional message broker.
+
+Implement Integration Tests.
+
+Refine error handling and logging further.
+
+Deploy services using container orchestration (e.g., Kubernetes).
+
+This project was developed as part of a learning journey focusing on advanced backend architecture and design patterns.

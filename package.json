@@ -74,9 +74,24 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "apps/**/*.{ts,js}",
+      "libs/**/*.{ts,js}",
+      "!**/*.module.{ts,js}",
+      "!**/*.spec.{ts,js}",
+      "!**/*.e2e-spec.{ts,js}",
+      "!**/node_modules/**",
+      "!**/dist/**",
+      "!**/main.{ts,js}",
+      "!**/index.{ts,js}",
+      "!**/*.(interface|dto|entity|constants|event|payload).{ts,js}"
     ],
     "coverageDirectory": "./coverage",
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "clover"
+    ],
     "testEnvironment": "node",
     "roots": [
       "<rootDir>/apps/",

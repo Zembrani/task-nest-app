@@ -70,6 +70,17 @@ describe('TaskController', () => {
         genericIdParam.id,
       );
     });
+
+    it('should throw NotFoundException when task not found', async () => {
+      mockTaskService.getTaskById.mockResolvedValue(null);
+
+      await expect(taskController.getTaskById(genericIdParam)).rejects.toThrow(
+        'Task not found.',
+      );
+      expect(mockTaskService.getTaskById).toHaveBeenCalledWith(
+        genericIdParam.id,
+      );
+    });
   });
 
   describe('createTask', () => {
@@ -91,7 +102,7 @@ describe('TaskController', () => {
   });
 
   describe('updateTask', () => {
-    it('should create and return a task', async () => {
+    it('should update and return a task when found', async () => {
       const updateTaskDTO: UpdateTaskDTO = {
         title: 'Updated Task',
         description: 'Updated Desc',
@@ -108,6 +119,23 @@ describe('TaskController', () => {
       );
 
       expect(result.title).toBe(updateTaskDTO.title);
+      expect(mockTaskService.updateTask).toHaveBeenCalledWith(
+        genericIdParam.id,
+        updateTaskDTO,
+      );
+    });
+
+    it('should throw NotFoundException when update returns null', async () => {
+      const updateTaskDTO: UpdateTaskDTO = {
+        title: 'Updated Task',
+        description: 'Updated Desc',
+        completed: true,
+      };
+      mockTaskService.updateTask.mockResolvedValue(null);
+
+      await expect(
+        taskController.updateTask(genericIdParam, updateTaskDTO),
+      ).rejects.toThrow('Task not found.');
       expect(mockTaskService.updateTask).toHaveBeenCalledWith(
         genericIdParam.id,
         updateTaskDTO,

@@ -34,7 +34,10 @@ describe('RabbitmqSubscriber', () => {
   });
 
   it('handleTaskUpdatedSub should log event and return undefined on success', async () => {
-    const payload = { ...samplePayload, data: { before: samplePayload.data, after: samplePayload.data } };
+    const payload = {
+      ...samplePayload,
+      data: { before: samplePayload.data, after: samplePayload.data },
+    };
     const res = await subscriber.handleTaskUpdatedSub(payload as any);
     expect(res).toBeUndefined();
     expect(logSpy).toHaveBeenCalledWith(

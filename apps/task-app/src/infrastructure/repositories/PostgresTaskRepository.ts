@@ -27,16 +27,8 @@ export class PostgresTaskRepository implements ITaskRepository {
 
     return this.mapToDomainEntity(task);
   }
-  async update(id: string, task: Partial<Task>): Promise<Task | null> {
-    const taskIndex = await this.taskRepository.findOne({ where: { id } });
-
-    if (!taskIndex) {
-      return null;
-    }
-
-    const updatedTask = Object.assign(taskIndex, task);
-
-    const savedTask = await this.taskRepository.save(updatedTask);
+  async update(task: Partial<Task>): Promise<Task> {
+    const savedTask = await this.taskRepository.save(task);
 
     return this.mapToDomainEntity(savedTask);
   }

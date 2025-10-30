@@ -27,7 +27,7 @@ import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
       port: 5432,
       username: 'postgres',
       password: 'tasknest',
-      database: 'tasks',
+      database: process.env.POSTGRES_DATABASE || 'tasks',
       synchronize: true,
       autoLoadEntities: true,
     }),

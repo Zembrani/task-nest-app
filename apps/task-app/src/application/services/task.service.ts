@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { Task } from '../../../../../libs/shared/src/domain/TaskDomain';
 import { ITaskService } from './ITask.service';
 import type { ITaskRepository } from '../repositories/ITaskRepository';
@@ -21,11 +21,11 @@ export class TaskService implements ITaskService {
     return this.taskRepository.getAll();
   }
 
-  async getTaskById(id: string): Promise<Task | null> {
+  async getTaskById(id: string): Promise<Task> {
     const existingTask = await this.taskRepository.getTaskById(id);
 
     if (!existingTask) {
-      return null;
+      throw new NotFoundException('Task not found.');
     }
     return existingTask;
   }
@@ -49,20 +49,16 @@ export class TaskService implements ITaskService {
     return createdTask;
   }
 
-  async updateTask(id: string, task: Partial<Task>): Promise<Task | null> {
+  async updateTask(id: string, task: Partial<Task>): Promise<Task> {
     const existingTask = await this.taskRepository.getTaskById(id);
 
     if (!existingTask) {
-      return null;
+      throw new NotFoundException('Task not found.');
     }
-
-    const updatedTask = await this.taskRepository.update(id, task);
+    const saveTask = Object.assign(existingTask, task);
+    const updatedTask = await this.taskRepository.update(saveTask);
 
     try {
-      if (!updatedTask) {
-        throw new Error('Updated task is null');
-      }
-
       const payload = new TaskUpdatedEvent({
         before: existingTask,
         after: updatedTask,
@@ -83,9 +79,10 @@ export class TaskService implements ITaskService {
   async deleteTask(id: string): Promise<void> {
     const existingTask = await this.taskRepository.getTaskById(id);
 
-    if (existingTask) {
-      await this.taskRepository.delete(id);
+    if (!existingTask) {
+      throw new NotFoundException('Task not found.');
     }
+    await this.taskRepository.delete(id);
 
     try {
       const payload = new TaskDeletedEvent({ id });

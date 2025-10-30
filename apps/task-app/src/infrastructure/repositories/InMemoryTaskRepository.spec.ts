@@ -43,7 +43,10 @@ describe('InMemoryTaskRepository', () => {
       completed: false,
     };
     (mockFactory.create as jest.Mock).mockReturnValue(created);
-    await repo.create({ title: created.title, description: created.description });
+    await repo.create({
+      title: created.title,
+      description: created.description,
+    });
 
     const found = await repo.getTaskById('id-2');
     expect(found).toEqual(created);
@@ -62,12 +65,22 @@ describe('InMemoryTaskRepository', () => {
       completed: false,
     };
     (mockFactory.create as jest.Mock).mockReturnValue(created);
-    await repo.create({ title: created.title, description: created.description });
+    await repo.create({
+      title: created.title,
+      description: created.description,
+    });
 
-    const updated = await repo.update('id-3', { title: 'Updated', completed: true });
+    const updated = await repo.update('id-3', {
+      title: 'Updated',
+      completed: true,
+    });
 
     expect(updated).toEqual({ ...created, title: 'Updated', completed: true });
-    expect(await repo.getTaskById('id-3')).toEqual({ ...created, title: 'Updated', completed: true });
+    expect(await repo.getTaskById('id-3')).toEqual({
+      ...created,
+      title: 'Updated',
+      completed: true,
+    });
   });
 
   it('update should return null when entity does not exist', async () => {
@@ -83,7 +96,10 @@ describe('InMemoryTaskRepository', () => {
       completed: false,
     };
     (mockFactory.create as jest.Mock).mockReturnValue(created);
-    await repo.create({ title: created.title, description: created.description });
+    await repo.create({
+      title: created.title,
+      description: created.description,
+    });
 
     await repo.delete('id-4');
     expect(await repo.getAll()).toEqual([]);

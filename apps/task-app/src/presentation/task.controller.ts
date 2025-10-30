@@ -31,10 +31,6 @@ export class TaskController {
   async getTaskById(@Param() param: TaskParamDTO): Promise<Task> {
     const task = await this.taskService.getTaskById(param.id);
 
-    if (!task) {
-      throw new NotFoundException('Task not found.');
-    }
-
     return task;
   }
 
@@ -60,10 +56,6 @@ export class TaskController {
     const task = { title, description, completed };
     const taskReturn = await this.taskService.updateTask(param.id, task);
 
-    if (!taskReturn) {
-      throw new NotFoundException('Task not found.');
-    }
-
     return taskReturn;
   }
 
@@ -71,6 +63,6 @@ export class TaskController {
   async deleteTask(@Param() param: TaskParamDTO): Promise<string> {
     await this.taskService.deleteTask(param.id);
 
-    return `Removeu o id ${param.id}`;
+    return `Task id ${param.id} deleted successfully.`;
   }
 }

@@ -71,9 +71,9 @@ describe('TaskService', () => {
       throw new Error('publish error');
     });
 
-    await expect(service.createTask({ title: sampleTask.title })).resolves.toEqual(
-      sampleTask,
-    );
+    await expect(
+      service.createTask({ title: sampleTask.title }),
+    ).resolves.toEqual(sampleTask);
     expect(mockRepo.create).toHaveBeenCalled();
     expect(mockAmqp.publish).toHaveBeenCalled();
   });
@@ -96,11 +96,15 @@ describe('TaskService', () => {
     const res = await service.updateTask(before.id, { title: 'updated' });
     expect(res).toEqual(after);
     expect(mockRepo.getTaskById).toHaveBeenCalledWith(before.id);
-    expect(mockRepo.update).toHaveBeenCalledWith(before.id, { title: 'updated' });
+    expect(mockRepo.update).toHaveBeenCalledWith(before.id, {
+      title: 'updated',
+    });
     expect(mockAmqp.publish).toHaveBeenCalledWith(
       'task_exchange',
       TaskEvents.UPDATED,
-      expect.objectContaining({ data: expect.objectContaining({ before, after }) }),
+      expect.objectContaining({
+        data: expect.objectContaining({ before, after }),
+      }),
       { persistent: true },
     );
   });

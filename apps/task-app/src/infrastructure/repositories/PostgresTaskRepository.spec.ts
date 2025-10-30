@@ -20,7 +20,9 @@ describe('PostgresTaskRepository', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    repo = new PostgresTaskRepository(mockRepository as unknown as Repository<any>);
+    repo = new PostgresTaskRepository(
+      mockRepository as unknown as Repository<any>,
+    );
   });
 
   it('getAll should return mapped Task array', async () => {
@@ -50,7 +52,9 @@ describe('PostgresTaskRepository', () => {
       description: sampleEntity.description,
       completed: sampleEntity.completed,
     } as Task);
-    expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: sampleEntity.id } });
+    expect(mockRepository.findOne).toHaveBeenCalledWith({
+      where: { id: sampleEntity.id },
+    });
   });
 
   it('getTaskById should return undefined when not found', async () => {
@@ -59,7 +63,9 @@ describe('PostgresTaskRepository', () => {
     const result = await repo.getTaskById('no-id');
 
     expect(result).toBeUndefined();
-    expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 'no-id' } });
+    expect(mockRepository.findOne).toHaveBeenCalledWith({
+      where: { id: 'no-id' },
+    });
   });
 
   it('create should save and return mapped Task', async () => {
@@ -93,7 +99,9 @@ describe('PostgresTaskRepository', () => {
       description: saved.description,
       completed: saved.completed,
     } as Task);
-    expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: existing.id } });
+    expect(mockRepository.findOne).toHaveBeenCalledWith({
+      where: { id: existing.id },
+    });
     expect(mockRepository.save).toHaveBeenCalled();
   });
 
@@ -103,7 +111,9 @@ describe('PostgresTaskRepository', () => {
     const result = await repo.update('not-found', { title: 'x' });
 
     expect(result).toBeNull();
-    expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 'not-found' } });
+    expect(mockRepository.findOne).toHaveBeenCalledWith({
+      where: { id: 'not-found' },
+    });
   });
 
   it('delete should call repository.delete with id', async () => {

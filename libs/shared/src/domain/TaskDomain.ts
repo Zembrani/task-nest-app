@@ -1,9 +1,4 @@
-import {
-  IsBoolean,
-  IsDefined,
-  IsString,
-  IsUUID,
-} from 'class-validator';
+import { IsBoolean, IsDefined, IsString, IsUUID } from 'class-validator';
 
 export class Task {
   id: string;

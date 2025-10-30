@@ -1,5 +1,5 @@
-import { Task } from "@app/shared/domain/TaskDomain";
-import { TaskFactory } from "./TaskFactory";
+import { Task } from '@app/shared/domain/TaskDomain';
+import { TaskFactory } from './TaskFactory';
 
 describe('TaskFactory', () => {
   let factory: TaskFactory;

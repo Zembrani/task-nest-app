@@ -1,15 +1,31 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/task-app/src",
+  "monorepo": true,
+  "root": ".",
   "compilerOptions": {
     "deleteOutDir": true,
-    "webpack": true,
-    "tsConfigPath": "apps/task-app/tsconfig.app.json"
+    "webpack": true
   },
-  "monorepo": true,
-  "root": "apps/task-app",
   "projects": {
+    "task-app": {
+      "type": "application",
+      "root": "apps/task-app",
+      "entryFile": "main",
+      "sourceRoot": "apps/task-app/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/task-app/tsconfig.app.json"
+      }
+    },
+    "authentication": {
+      "type": "application",
+      "root": "apps/authentication",
+      "entryFile": "main",
+      "sourceRoot": "apps/authentication/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/authentication/tsconfig.app.json"
+      }
+    },
     "notification": {
       "type": "application",
       "root": "apps/notification",
@@ -26,15 +42,6 @@
       "sourceRoot": "libs/shared/src",
       "compilerOptions": {
         "tsConfigPath": "libs/shared/tsconfig.lib.json"
-      }
-    },
-    "src": {
-      "type": "application",
-      "root": "apps/task-app",
-      "entryFile": "main",
-      "sourceRoot": "apps/task-app/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/task-app/src/tsconfig.app.json"
       }
     }
   }

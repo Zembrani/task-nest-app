@@ -4,6 +4,8 @@ import { AuthenticationController } from './presentation/authentication.controll
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './infrastructure/database/users.entity';
 import { PostgresUserRepository } from './infrastructure/repository/PostgresUserRepository';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './presentation/constants/jwtConstants';
 
 @Module({
   controllers: [AuthenticationController],
@@ -20,6 +22,11 @@ import { PostgresUserRepository } from './infrastructure/repository/PostgresUser
     },
   ],
   imports: [
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '60s' },
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',

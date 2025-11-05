@@ -25,7 +25,7 @@ import { jwtConstants } from './presentation/constants/jwtConstants';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '30m' },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',

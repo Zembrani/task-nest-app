@@ -17,11 +17,9 @@ export class UserEntity {
   @Column()
   password: string;
 
-  @Column()
   @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
   @UpdateDateColumn()
   updatedAt: Date;
 }

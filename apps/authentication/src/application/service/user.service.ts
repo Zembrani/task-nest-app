@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import type { IUserRepository } from '../repository/IUserRepository';
 import { IUserService } from './IUser.service';
 import { CreateUserDTO, FindUserDTO } from '../../domain/UserDomain';
@@ -15,7 +15,7 @@ export class UserService implements IUserService {
   async logIn(payload: FindUserDTO): Promise<{ access_token: string }> {
     const { username, password } = payload;
 
-    const user = await this.userRepository.findByUsernameAndPassword(username);
+    const user = await this.userRepository.findByUsername(username);
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials.');
@@ -36,6 +36,11 @@ export class UserService implements IUserService {
 
   async createUser(payload: CreateUserDTO): Promise<any> {
     const { username, password } = payload;
+
+    const existingUser = await this.userRepository.findByUsername(username);
+    if (existingUser) {
+      throw new ConflictException('Username already exists.');
+    }
 
     const salt = 10;
     const hashedPassword = await bcrypt.hash(password, salt);

@@ -12,7 +12,7 @@ export class PostgresUserRepository implements IUserRepository {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async findByUsernameAndPassword(username: string): Promise<User | undefined> {
+  async findByUsername(username: string): Promise<User | undefined> {
     const user = await this.userRepository.findOne({
       where: { username },
     });

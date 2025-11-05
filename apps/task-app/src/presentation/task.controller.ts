@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import {
   CreateTaskDTO,
@@ -15,11 +16,13 @@ import {
   UpdateTaskDTO,
 } from '../../../../libs/shared/src/domain/TaskDomain';
 import type { ITaskService } from '../application/services/ITask.service';
+import { AuthGuard } from 'apps/authentication/src/presentation/guards/auth.guard';
 
 @Controller('tasks')
 export class TaskController {
   constructor(@Inject('ITaskService') private taskService: ITaskService) {}
 
+  @UseGuards(AuthGuard)
   @Get()
   async getAll(): Promise<Task[]> {
     const tasks: Task[] = await this.taskService.getAll();

@@ -25,3 +25,18 @@ export class CreateUserDTO {
   @IsDefined()
   password: string;
 }
+
+export class CreateUserResponseDTO {
+  @IsString()
+  @IsDefined()
+  id: string;
+  @IsString()
+  @IsDefined()
+  username: string;
+  @IsString()
+  @IsDefined()
+  createdAt: Date;
+  @IsString()
+  @IsDefined()
+  updatedAt: Date;
+}

@@ -29,6 +29,7 @@ export class TaskController {
     return tasks;
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
   async getTaskById(@Param() param: TaskParamDTO): Promise<Task> {
     const task = await this.taskService.getTaskById(param.id);
@@ -36,6 +37,7 @@ export class TaskController {
     return task;
   }
 
+  @UseGuards(AuthGuard)
   @Post()
   async createTask(@Body() body: CreateTaskDTO): Promise<Task> {
     const { title, description } = body;
@@ -48,6 +50,7 @@ export class TaskController {
     return task;
   }
 
+  @UseGuards(AuthGuard)
   @Put(':id')
   async updateTask(
     @Param() param: TaskParamDTO,
@@ -61,6 +64,7 @@ export class TaskController {
     return taskReturn;
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
   async deleteTask(@Param() param: TaskParamDTO): Promise<string> {
     await this.taskService.deleteTask(param.id);

@@ -1,12 +1,13 @@
+import { randomUUID } from 'crypto';
 import { Task } from '../../TaskDomain';
 
 export class BaseEvent {
   public readonly id: string;
-  public readonly timestamp;
+  public readonly timestamp: Date;
   public readonly actor: { userId: string };
 
   constructor(actorId: string = 'admin') {
-    this.id = crypto.randomUUID();
+    this.id = randomUUID();
     this.timestamp = new Date();
     this.actor = { userId: actorId };
   }

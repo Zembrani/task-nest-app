@@ -85,13 +85,13 @@ describe('PostgresTaskRepository', () => {
   });
 
   it('update should return mapped Task when entity exists', async () => {
-    const updateData = { title: 'Updated' };
+    const updateData = { id: sampleEntity.id, title: 'Updated' };
     const existing = { ...sampleEntity };
     const saved = { ...existing, ...updateData };
     (mockRepository.findOne as jest.Mock).mockResolvedValue(existing);
     (mockRepository.save as jest.Mock).mockResolvedValue(saved);
 
-    const result = await repo.update(existing.id, updateData);
+    const result = await repo.update(updateData);
 
     expect(result).toEqual({
       id: saved.id,
@@ -99,21 +99,7 @@ describe('PostgresTaskRepository', () => {
       description: saved.description,
       completed: saved.completed,
     } as Task);
-    expect(mockRepository.findOne).toHaveBeenCalledWith({
-      where: { id: existing.id },
-    });
     expect(mockRepository.save).toHaveBeenCalled();
-  });
-
-  it('update should return null when entity does not exist', async () => {
-    (mockRepository.findOne as jest.Mock).mockResolvedValue(undefined);
-
-    const result = await repo.update('not-found', { title: 'x' });
-
-    expect(result).toBeNull();
-    expect(mockRepository.findOne).toHaveBeenCalledWith({
-      where: { id: 'not-found' },
-    });
   });
 
   it('delete should call repository.delete with id', async () => {

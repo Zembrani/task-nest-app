@@ -6,6 +6,9 @@ import {
   UpdateTaskDTO,
   CreateTaskDTO,
 } from '../../../../libs/shared/src/domain/TaskDomain';
+import { AuthGuard } from '@app/shared/guards/auth.guard';
+import { JwtService } from '@nestjs/jwt';
+import { NotFoundException } from '@nestjs/common';
 
 const mockTaskService = {
   getAll: jest.fn(),
@@ -34,6 +37,8 @@ describe('TaskController', () => {
           provide: 'ITaskService',
           useValue: mockTaskService,
         },
+        AuthGuard,
+        JwtService
       ],
     }).compile();
 
@@ -72,10 +77,10 @@ describe('TaskController', () => {
     });
 
     it('should throw NotFoundException when task not found', async () => {
-      mockTaskService.getTaskById.mockResolvedValue(null);
+      mockTaskService.getTaskById.mockRejectedValue(new NotFoundException('Task not found.'));
 
       await expect(taskController.getTaskById(genericIdParam)).rejects.toThrow(
-        'Task not found.',
+        new NotFoundException('Task not found.')
       );
       expect(mockTaskService.getTaskById).toHaveBeenCalledWith(
         genericIdParam.id,
@@ -125,17 +130,17 @@ describe('TaskController', () => {
       );
     });
 
-    it('should throw NotFoundException when update returns null', async () => {
+    it('should throw NotFoundException when update returns NotFoundException', async () => {
       const updateTaskDTO: UpdateTaskDTO = {
         title: 'Updated Task',
         description: 'Updated Desc',
         completed: true,
       };
-      mockTaskService.updateTask.mockResolvedValue(null);
+      mockTaskService.updateTask.mockRejectedValue(new NotFoundException('Task not found.'));
 
       await expect(
         taskController.updateTask(genericIdParam, updateTaskDTO),
-      ).rejects.toThrow('Task not found.');
+      ).rejects.toThrow(new NotFoundException('Task not found.'));
       expect(mockTaskService.updateTask).toHaveBeenCalledWith(
         genericIdParam.id,
         updateTaskDTO,
@@ -149,7 +154,7 @@ describe('TaskController', () => {
 
       const result = await taskController.deleteTask(genericIdParam);
 
-      expect(result).toBe(`Removeu o id ${genericIdParam.id}`);
+      expect(result).toBe(`Task id ${genericIdParam.id} deleted successfully.`);
       expect(mockTaskService.deleteTask).toHaveBeenCalledWith(
         genericIdParam.id,
       );

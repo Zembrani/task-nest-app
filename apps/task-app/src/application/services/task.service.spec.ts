@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { Task } from '../../../../../libs/shared/src/domain/TaskDomain';
 import { TaskEvents } from '../../../../../libs/shared/src/domain/events/event.constants';
@@ -42,13 +43,16 @@ describe('TaskService', () => {
     expect(mockRepo.getAll).toHaveBeenCalled();
   });
 
-  it('getTaskById should return task when found and null when not', async () => {
+  it('getTaskById should return task when found and throw NotFoundException when not', async () => {
     mockRepo.getTaskById.mockResolvedValueOnce(sampleTask);
-    expect(await service.getTaskById(sampleTask.id)).toEqual(sampleTask);
+    const result = await service.getTaskById(sampleTask.id);
+    expect(result).toEqual(sampleTask);
     expect(mockRepo.getTaskById).toHaveBeenCalledWith(sampleTask.id);
 
     mockRepo.getTaskById.mockResolvedValueOnce(undefined);
-    expect(await service.getTaskById('no-id')).toBeNull();
+    await expect(service.getTaskById('no-id')).rejects.toThrow(
+      new NotFoundException('Task not found.')
+    );
   });
 
   it('createTask should create and publish created event', async () => {
@@ -78,10 +82,12 @@ describe('TaskService', () => {
     expect(mockAmqp.publish).toHaveBeenCalled();
   });
 
-  it('updateTask should return null when task does not exist', async () => {
+  it('updateTask should throw NotFoundException when task does not exist', async () => {
     mockRepo.getTaskById.mockResolvedValue(undefined);
-    const res = await service.updateTask('no-id', { title: 'x' });
-    expect(res).toBeNull();
+
+    await expect(service.updateTask('no-id', { title: 'test' })).rejects.toThrow(
+      new NotFoundException('Task not found.'),
+    );
     expect(mockRepo.getTaskById).toHaveBeenCalledWith('no-id');
     expect(mockAmqp.publish).not.toHaveBeenCalled();
   });
@@ -96,9 +102,7 @@ describe('TaskService', () => {
     const res = await service.updateTask(before.id, { title: 'updated' });
     expect(res).toEqual(after);
     expect(mockRepo.getTaskById).toHaveBeenCalledWith(before.id);
-    expect(mockRepo.update).toHaveBeenCalledWith(before.id, {
-      title: 'updated',
-    });
+    expect(mockRepo.update).toHaveBeenCalledWith(before);
     expect(mockAmqp.publish).toHaveBeenCalledWith(
       'task_exchange',
       TaskEvents.UPDATED,
@@ -107,16 +111,6 @@ describe('TaskService', () => {
       }),
       { persistent: true },
     );
-  });
-
-  it('updateTask should return null and not publish when update returns null', async () => {
-    const before = { ...sampleTask };
-    mockRepo.getTaskById.mockResolvedValue(before);
-    mockRepo.update.mockResolvedValue(null);
-
-    const res = await service.updateTask(before.id, { title: 'updated' });
-    expect(res).toBeNull();
-    expect(mockAmqp.publish).not.toHaveBeenCalled();
   });
 
   it('deleteTask should delete when exists and always publish deleted event', async () => {
@@ -134,16 +128,13 @@ describe('TaskService', () => {
     );
   });
 
-  it('deleteTask should publish even if entity does not exist and not call delete', async () => {
+  it('deleteTask should throw NotFoundException when task does not exist', async () => {
     mockRepo.getTaskById.mockResolvedValueOnce(undefined);
 
-    await service.deleteTask('no-id');
-    expect(mockRepo.delete).not.toHaveBeenCalled();
-    expect(mockAmqp.publish).toHaveBeenCalledWith(
-      'task_exchange',
-      TaskEvents.DELETED,
-      expect.objectContaining({ data: { id: 'no-id' } }),
-      { persistent: true },
+    await expect(service.deleteTask('no-id')).rejects.toThrow(
+      new NotFoundException('Task not found.'),
     );
+    expect(mockRepo.delete).not.toHaveBeenCalled();
+    expect(mockAmqp.publish).not.toHaveBeenCalled();
   });
 });

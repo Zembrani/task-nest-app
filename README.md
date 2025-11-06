@@ -1,284 +1,537 @@
-Task Management Microservices (Nest.js, DDD, RabbitMQ, JWT)
+# 🚀 Task Management Microservices
 
-This project demonstrates a robust, event-driven backend system built on a Nest.js monorepo. It features three distinct microservices that communicate asynchronously using RabbitMQ, showcasing a full implementation of Clean Architecture, Domain-Driven Design (DDD) principles, and secure JWT authentication.
+> **A robust, event-driven backend system showcasing Nest.js, DDD, RabbitMQ, and JWT authentication**
 
-The three services are:
+[![Nest.js](https://img.shields.io/badge/nestjs-11.x-E0234E?style=flat&logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/typescript-5.x-3178C6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
+[![RabbitMQ](https://img.shields.io/badge/rabbitmq-latest-FF6600?style=flat&logo=rabbitmq)](https://www.rabbitmq.com/)
+[![PostgreSQL](https://img.shields.io/badge/postgresql-latest-4169E1?style=flat&logo=postgresql)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/docker-compose-2496ED?style=flat&logo=docker)](https://www.docker.com/)
 
-task-app: A "Resource Server" providing a protected REST API for CRUD operations on Tasks.
+---
 
-notification-app: A "Consumer" service that listens for task-related events and logs them (simulating sending notifications).
+## 📋 Table of Contents
 
-authentication-app: An "Auth Server" that acts as the system's identity provider, handling user registration and issuing JSON Web Tokens (JWT).
+- [Overview](#-overview)
+- [Key Concepts & Features](#-key-concepts--features)
+- [Architecture Overview](#-architecture-overview)
+- [Engineering Decisions](#-engineering-decisions--trade-offs)
+- [Technologies](#-technologies-used)
+- [Getting Started](#-getting-started)
+- [API Endpoints](#-api-endpoints)
+- [Testing](#-running-tests)
+- [Future Improvements](#-future-improvements--next-steps)
 
-✨ Key Concepts & Features Demonstrated
+---
 
-This project serves as a practical, portfolio-ready example of implementing several advanced backend concepts:
+## 🎯 Overview
 
-Microservices Architecture: Three distinct Nest.js applications (task-app, notification-app, authentication-app) running independently within a monorepo.
+This project demonstrates a **portfolio-ready** microservices architecture built on a Nest.js monorepo. It features three distinct microservices that communicate asynchronously using RabbitMQ, showcasing a full implementation of **Clean Architecture**, **Domain-Driven Design (DDD)** principles, and secure **JWT authentication**.
 
-Authentication & Authorization:
+### The Three Services
 
-JWT (JSON Web Token): A dedicated authentication-app handles user registration (/auth/register) and login (/auth/login), issuing secure JWTs.
+<table>
+<tr>
+<td width="33%" align="center">
 
-Password Hashing: Uses bcrypt to securely hash and compare user passwords.
+### 🛠️ task-app
+**Resource Server**
 
-Guards: The task-app acts as a "Resource Server" that uses a shared AuthGuard to protect its endpoints, validating JWTs on incoming requests.
+Protected REST API for CRUD operations on Tasks
 
-Clean Architecture: Strict separation of concerns in each service into Domain, Application, Infrastructure, and Presentation layers.
+`Port: 3000`
 
-Domain-Driven Design (DDD):
+</td>
+<td width="33%" align="center">
 
-Bounded Contexts: Each microservice represents a distinct Bounded Context (Task Management, Notifications, Authentication).
+### 🔔 notification-app
+**Event Consumer**
 
-Entities & Aggregates: Task and User as core domain entities.
+Listens for task events and processes notifications
 
-Repositories: Abstracting data persistence (ITaskRepository, IUserRepository).
+`Port: 3002`
 
-Domain Events: Modeling business occurrences (TaskCreatedEvent, TaskUpdatedEvent) as type-safe classes with metadata (eventId, timestamp).
+</td>
+<td width="33%" align="center">
 
-Event-Driven Communication: Utilizing RabbitMQ as a message broker for decoupled, asynchronous communication between the task-app (Producer) and notification-app (Consumer).
+### 🔐 authentication-app
+**Auth Server**
 
-Data Persistence: Using TypeORM and PostgreSQL for data persistence. Each service manages its own tables (tasks and users) within the same shared database.
+Identity provider handling registration and JWT issuing
 
-API Validation: Robust request validation using class-validator and Nest.js ValidationPipe for both request bodies (@Body()) and URL parameters (@Param()).
+`Port: 3001`
 
-Testing:
+</td>
+</tr>
+</table>
 
-Unit Tests: Complete test suites for controllers and services (*.spec.ts) using Jest, mocking dependencies (Repositories, Services) to test logic in isolation.
+---
 
-E2E Tests: Integration tests (*.e2e-spec.ts) using Supertest to make real HTTP requests against the API and validate responses against a separate test database.
+## ✨ Key Concepts & Features
 
-Docker Compose: A single docker-compose.yml file to set up and run all required external services (PostgreSQL, RabbitMQ) with persistent data volumes.
+### 🏗️ Microservices & Design
 
-Monorepo Structure: Using libs/shared to share common code (like DTOs, event definitions, and the AuthGuard) between services.
+- **Microservices Architecture**: Three distinct Nest.js applications running independently
+- **Clean Architecture**: Strict separation into Domain, Application, Infrastructure, and Presentation layers
+- **Domain-Driven Design (DDD)**:
+  - **Bounded Contexts**: Each microservice represents a distinct bounded context
+  - **Entities & Aggregates**: Task and User as core domain entities
+  - **Repositories**: Abstracting data persistence (`ITaskRepository`, `IUserRepository`)
 
-🏛️ Architecture Overview
+### 🔒 Authentication & Authorization
 
-The system is composed of three separate services that interact with each other and with external infrastructure.
+- **JWT (JSON Web Token)**: Dedicated auth service for user registration and login
+- **Password Hashing**: Secure bcrypt implementation
+- **Guards**: Resource server protection using shared `AuthGuard` for JWT validation
 
-authentication-app (Port 3001)
+### 📡 Event-Driven & Data
 
-Provides public endpoints for POST /auth/register and POST /auth/login.
+- **Event-Driven Communication**: RabbitMQ message broker for decoupled, asynchronous communication
+- **Domain Events**: Type-safe event classes with metadata (`TaskCreatedEvent`, `TaskUpdatedEvent`)
+- **Data Persistence**: TypeORM + PostgreSQL with separate table management per service
 
-Hashes passwords using bcrypt.
+### 🧪 Tooling & Testing
 
-Validates user credentials against the users table in PostgreSQL.
+- **API Validation**: Robust request validation using `class-validator` and Nest.js `ValidationPipe`
+- **Comprehensive Testing**:
+  - ✅ Unit Tests: Complete test suites with Jest and mocked dependencies
+  - ✅ E2E Tests: Integration tests using Supertest against test database
+- **Docker Compose**: Single-command setup for all external services
+- **Monorepo Structure**: Shared code via `libs/shared` for DTOs, events, and guards
 
-Creates and signs JWTs using a shared secret.
+---
 
-task-app (Port 3000)
+## 🏛️ Architecture Overview
 
-Provides protected endpoints (/tasks) for managing tasks.
+```
+┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
+│                 │         │                 │         │                 │
+│  🔐 Auth App    │         │  🛠️ Task App    │         │  🔔 Notif App   │
+│  (Port 3001)    │         │  (Port 3000)    │         │  (Port 3002)    │
+│                 │         │                 │         │                 │
+│  • Register     │         │  • CRUD Tasks   │         │  • Consume      │
+│  • Login        │◄────────│  • Validate JWT │         │    Events       │
+│  • Issue JWT    │  Uses   │  • Publish      │────────►│  • Log/Notify   │
+│                 │   JWT   │    Events       │  Events │                 │
+└────────┬────────┘         └────────┬────────┘         └────────┬────────┘
+         │                           │                           │
+         │                           │                           │
+         └───────────┬───────────────┴───────────┬───────────────┘
+                     │                           │
+                     ▼                           ▼
+            ┌─────────────────┐        ┌─────────────────┐
+            │   PostgreSQL    │        │    RabbitMQ     │
+            │  (Port 5432)    │        │  (Port 5672)    │
+            └─────────────────┘        └─────────────────┘
+```
 
-Uses a shared AuthGuard to verify the Authorization: Bearer <token> header on all requests.
+### 🔐 authentication-app (Port 3001)
 
-Performs business logic and validation (e.g., throwing NotFoundException if a task doesn't exist).
+- ✅ Public endpoints: `POST /auth/register` and `POST /auth/login`
+- ✅ Password hashing with bcrypt
+- ✅ Credential validation against `users` table
+- ✅ JWT creation and signing with shared secret
 
-Saves data to the tasks table in PostgreSQL.
+### 🛠️ task-app (Port 3000)
 
-Publishes domain events (e.g., task.created) to the task_exchange in RabbitMQ.
+- ✅ Protected endpoints requiring JWT authentication
+- ✅ Shared `AuthGuard` for `Authorization: Bearer <token>` validation
+- ✅ Business logic with proper error handling
+- ✅ Data persistence to `tasks` table
+- ✅ Event publishing to `task_exchange` in RabbitMQ
 
-notification-app (Port 3002)
+### 🔔 notification-app (Port 3002)
 
-Has no public API endpoints.
+- ✅ No public API endpoints
+- ✅ RabbitMQ connection on startup
+- ✅ Event subscription from `task_exchange`
+- ✅ Event logging (simulating notifications)
 
-Connects to RabbitMQ on startup.
+---
 
-Subscribes to events (like task.created) from the task_exchange.
+## 🧠 Engineering Decisions & Trade-offs
 
-Logs the received event data, simulating an action like sending an email or push notification.
+> **This project wasn't just built to work; it was engineered to demonstrate specific patterns for scalability, testability, and resilience.**
 
-🛠️ Technologies Used
+### 1️⃣ Architecture: Microservices vs. Monolith
 
-Framework: Nest.js (^11.x)
+| Aspect | Decision | Benefit | Trade-off |
+|--------|----------|---------|-----------|
+| **Pattern** | Microservice architecture with separate bounded contexts | Independent development, deployment, and scaling; isolated failure domains | Increased operational complexity, network latency, eventual consistency |
 
-Language: TypeScript (^5.x)
+**Example**: If `notification-app` experiences high load, it can be scaled independently without affecting `task-app`.
 
-Database: PostgreSQL (via Docker)
+---
 
-ORM: TypeORM (^0.3.x)
+### 2️⃣ Communication: Asynchronous (RabbitMQ) vs. Synchronous (HTTP/gRPC)
 
-Messaging: RabbitMQ (via Docker, using @golevelup/nestjs-rabbitmq)
+| Aspect | Decision | Benefit | Trade-off |
+|--------|----------|---------|-----------|
+| **Pattern** | Event-driven, asynchronous via RabbitMQ | High resilience, decoupling, zero data loss, low latency | Eventual consistency, message ordering complexity |
 
-Authentication: JWT (@nestjs/jwt), bcrypt
+**Example**: Creating a task returns `201 Created` immediately. The notification is processed asynchronously, ensuring the user isn't blocked.
 
-Validation: class-validator, class-transformer
+---
 
-Testing: Jest (^30.x), Supertest
+### 3️⃣ Design Pattern: Clean Architecture & DDD
 
-Containerization: Docker, Docker Compose
+| Aspect | Decision | Benefit | Trade-off |
+|--------|----------|---------|-----------|
+| **Pattern** | Clean Architecture with domain isolation | Framework-agnostic core, highly testable, portable | More boilerplate, steeper learning curve |
 
-🏗️ Project Structure
+**Example**: The `Task` entity has zero dependencies on Nest.js or TypeORM—we could swap frameworks with minimal changes to business logic.
 
-This project follows a Nest.js monorepo structure:
+---
 
+### 4️⃣ Security: Dedicated authentication-app
+
+| Aspect | Decision | Benefit | Trade-off |
+|--------|----------|---------|-----------|
+| **Pattern** | Centralized Identity Provider (IdP) | Single source of truth for identity, easy to add new services, auth method flexibility | Additional service to maintain |
+
+**Example**: The `task-app` doesn't care how authentication happens—it only validates the JWT from a trusted issuer.
+
+---
+
+## 🛠️ Technologies Used
+
+<table>
+<tr>
+<td width="50%">
+
+**Core Framework**
+- Nest.js `^11.x`
+- TypeScript `^5.x`
+
+**Database & ORM**
+- PostgreSQL (Docker)
+- TypeORM `^0.3.x`
+
+**Messaging**
+- RabbitMQ (Docker)
+- `@golevelup/nestjs-rabbitmq`
+
+</td>
+<td width="50%">
+
+**Authentication**
+- JWT (`@nestjs/jwt`)
+- bcrypt
+
+**Validation**
+- class-validator
+- class-transformer
+
+**Testing**
+- Jest `^30.x`
+- Supertest
+
+**Containerization**
+- Docker
+- Docker Compose
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🗂️ Project Structure
+
+```
+task-nest-app/
 ├── apps/
-│   ├── task-app/            # Task Management microservice (Resource Server)
-│   ├── notification-app/    # Notification microservice (Consumer)
-│   └── authentication-app/  # Authentication microservice (Auth Server)
+│   ├── task-app/              # 🛠️ Task Management (Resource Server)
+│   ├── notification-app/      # 🔔 Notification Consumer
+│   └── authentication-app/    # 🔐 Authentication (Auth Server)
+│
 ├── libs/
-│   └── shared/              # Shared code (DTOs, Events, Guards)
+│   └── shared/                # 📦 Shared Code
 │       └── src/
-│           ├── constants/   # jwtConstants.ts
-│           ├── domain/      # TaskDomain.ts, UserDomain.ts
-│           ├── events/      # event.constants.ts, task.events.ts
-│           └── guards/      # auth.guard.ts
-├── docker-compose.yml       # Docker setup for Postgres & RabbitMQ
+│           ├── constants/     # jwtConstants.ts
+│           ├── domain/        # TaskDomain.ts, UserDomain.ts
+│           ├── events/        # event.constants.ts, task.events.ts
+│           └── guards/        # auth.guard.ts
+│
+├── docker-compose.yml         # 🐳 Docker setup
 ├── package.json
 └── README.md
+```
 
+---
 
-🚀 Getting Started
+## 🚀 Getting Started
 
-Prerequisites
+### Prerequisites
 
-Node.js (v18 or higher recommended)
+- ✅ Node.js (v18 or higher)
+- ✅ NPM or Yarn
+- ✅ Docker & Docker Compose
 
-NPM or Yarn
+---
 
-Docker & Docker Compose
+### 1️⃣ Installation & Setup
 
-1. Installation & Setup
+**Clone the repository:**
 
-Clone the repository:
-
-git clone [https://github.com/Zembrani/task-nest-app.git](https://github.com/Zembrani/task-nest-app.git)
+```bash
+git clone https://github.com/Zembrani/task-nest-app.git
 cd task-nest-app
+```
 
+**Install dependencies:**
 
-Install dependencies:
-
+```bash
 npm install
+```
 
+**Start External Services:**
 
-Start External Services:
-
+```bash
 docker-compose up -d
+```
 
+> **Note**: This starts PostgreSQL and RabbitMQ in the background.
 
-This starts PostgreSQL and RabbitMQ in the background.
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| PostgreSQL | `localhost:5432` | db: `tasks`, user: `postgres`, pass: `tasknest` |
+| RabbitMQ UI | `http://localhost:15672` | user: `guest`, pass: `guest` |
 
-PostgreSQL: Available at localhost:5432 (db: tasks, user: postgres, pass: tasknest)
+---
 
-RabbitMQ UI: Available at http://localhost:15672 (login: guest / guest)
+### 2️⃣ Running the Application (Development)
 
-2. Running the Application (Development)
+> **Important**: Run all three microservices simultaneously in separate terminals.
 
-You must run all three microservices simultaneously in separate terminals.
+**Terminal 1 - Auth Service:**
 
-Terminal 1 (Start Auth Service):
-
+```bash
 npm run start:dev:auth
+```
 
+🌐 Runs on `http://localhost:3001`
 
-(Runs on http://localhost:3001)
+---
 
-Terminal 2 (Start Task Service):
+**Terminal 2 - Task Service:**
 
+```bash
 npm run start:dev:task
+```
 
+🌐 Runs on `http://localhost:3000`
 
-(Runs on http://localhost:3000)
+---
 
-Terminal 3 (Start Notification Service):
+**Terminal 3 - Notification Service:**
 
+```bash
 npm run start:dev:notification
+```
 
+🌐 Runs on `http://localhost:3002`
 
-(Runs on http://localhost:3002 - check main.ts for port)
+---
 
-Wait for all three applications to show that they have successfully connected to the database and RabbitMQ.
+Wait for all three applications to show successful connections to the database and RabbitMQ.
 
-3. End-to-End Test Flow
+---
 
-Register a User:
+### 3️⃣ End-to-End Test Flow
 
-POST /auth/register (to http://localhost:3001)
+#### Step 1: Register a User
 
-Body: { "username": "testuser", "password": "password123" }
+```bash
+POST http://localhost:3001/auth/register
+Content-Type: application/json
 
-Log In:
+{
+  "username": "testuser",
+  "password": "password123"
+}
+```
 
-POST /auth/login (to http://localhost:3001)
+---
 
-Body: { "username": "testuser", "password": "password123" }
+#### Step 2: Log In
 
-Copy the access_token from the response.
+```bash
+POST http://localhost:3001/auth/login
+Content-Type: application/json
 
-Create a Task:
+{
+  "username": "testuser",
+  "password": "password123"
+}
+```
 
-POST /tasks (to http://localhost:3000)
+📋 Copy the `access_token` from the response.
 
-Header: Authorization: Bearer <your_access_token>
+---
 
-Body: { "title": "My First Task", "description": "Use my JWT!" }
+#### Step 3: Create a Task
 
-Check the result: You will get a 201 Created response. In your notification-app terminal, you will see the task.created event log!
+```bash
+POST http://localhost:3000/tasks
+Authorization: Bearer <your_access_token>
+Content-Type: application/json
 
-Try to Access Without Token:
+{
+  "title": "My First Task",
+  "description": "Use my JWT!"
+}
+```
 
-GET /tasks (to http://localhost:3000)
+✅ **Result**: You'll get a `201 Created` response, and the `notification-app` terminal will log the `task.created` event!
 
-Result: This will fail with a 401 Unauthorized error, as the AuthGuard is protecting the endpoint.
+---
 
-✅ Running Tests
+#### Step 4: Try Without Token
 
-Unit Tests
+```bash
+GET http://localhost:3000/tasks
+```
 
-Run all unit tests for all applications and generate a coverage report:
+❌ **Result**: `401 Unauthorized` error
 
+---
+
+## ✅ Running Tests
+
+### Unit Tests
+
+Run all unit tests and generate coverage report:
+
+```bash
 npm run test:cov
+```
 
+### End-to-End (E2E) Tests
 
-(This uses the Jest config in package.json)
+E2E tests run against a separate test database (`tasks_test`) for isolation:
 
-End-to-End (E2E) Tests
-
-The E2E tests run against a separate test database (tasks_test) to ensure isolation.
-
+```bash
 npm run test:e2e
+```
 
+---
 
-(This uses the jest-e2e.json config and runs all *.e2e-spec.ts files)
+## 📌 API Endpoints
 
-🔌 API Endpoints
+### 🔐 Authentication Service (`http://localhost:3001`)
 
-Authentication Service (http://localhost:3001)
+#### `POST /auth/register` 🌐 Public
 
-POST /auth/register (Public)
+**Request:**
+```json
+{
+  "username": "string",
+  "password": "string"
+}
+```
 
-Body: { "username": "string", "password": "string" }
+**Response:** User object (excluding password)
 
-Returns: The newly created User object (excluding password).
+---
 
-POST /auth/login (Public)
+#### `POST /auth/login` 🌐 Public
 
-Body: { "username": "string", "password": "string" }
+**Request:**
+```json
+{
+  "username": "string",
+  "password": "string"
+}
+```
 
-Returns: { "access_token": "string" }
+**Response:**
+```json
+{
+  "access_token": "string"
+}
+```
 
-Task Service (http://localhost:3000)
+---
 
-All endpoints below are PROTECTED and require a valid JWT Authorization: Bearer <token> header.
+### 🛠️ Task Service (`http://localhost:3000`)
 
-GET /tasks: Get all tasks.
+> **🔒 Protected**: All endpoints require `Authorization: Bearer <token>` header
 
-GET /tasks/:id: Get a single task by its UUID.
+| Method | Endpoint | Description | Event Triggered |
+|--------|----------|-------------|-----------------|
+| `GET` | `/tasks` | Get all tasks | - |
+| `GET` | `/tasks/:id` | Get single task by UUID | - |
+| `POST` | `/tasks` | Create new task | `task.created` |
+| `PUT` | `/tasks/:id` | Update existing task | `task.updated` |
+| `DELETE` | `/tasks/:id` | Delete task | `task.deleted` |
 
-POST /tasks: Create a new task.
+#### `POST /tasks` Request Body:
+```json
+{
+  "title": "string",
+  "description": "string"
+}
+```
 
-Body: { "title": "string", "description": "string" }
+#### `PUT /tasks/:id` Request Body:
+```json
+{
+  "title": "string",      // optional
+  "description": "string", // optional
+  "completed": boolean     // optional
+}
+```
 
-Triggers task.created event.
+---
 
-PUT /tasks/:id: Update an existing task.
+## 🌱 Future Improvements & Next Steps
 
-Body: { "title"?: "string", "description"?: "string", "completed"?: boolean }
+This project provides a solid foundation. Here are the clear next steps for a production-grade system:
 
-Triggers task.updated event.
+### 1️⃣ Observability: Distributed Tracing
 
-DELETE /tasks/:id: Delete a task.
+**Problem**: How do we debug when an event notification never arrives?
 
-Returns 204 No Content on success.
+**Solution**: Implement distributed tracing (e.g., OpenTelemetry, Jaeger) to track requests across all microservices.
 
-Triggers task.deleted event.
+---
+
+### 2️⃣ Resilience: Dead Letter Queues (DLQ)
+
+**Problem**: What happens when `notification-app` fails due to a "poison pill" message?
+
+**Solution**: Configure Dead Letter Queues in RabbitMQ to capture failed messages for manual inspection and retry.
+
+---
+
+### 3️⃣ Infrastructure: API Gateway
+
+**Problem**: Clients need to know the URLs of multiple services.
+
+**Solution**: Introduce an API Gateway (e.g., Kong, AWS API Gateway) as a single entry point for the entire system.
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+## 👤 Author
+
+**Zembrani**
+
+- GitHub: [@Zembrani](https://github.com/Zembrani)
+- Repository: [task-nest-app](https://github.com/Zembrani/task-nest-app)
+
+---
+
+<div align="center">
+
+**⭐ If you found this project helpful, please consider giving it a star!**
+
+Made with ❤️ using Nest.js, TypeScript, and a lot of ☕
+
+</div>

@@ -5,7 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskEntity } from './infrastructure/database/task.entity';
 import { PostgresTaskRepository } from './infrastructure/repositories/PostgresTaskRepository';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
-import { AuthenticationModule } from 'apps/authentication/src/authentication.module';
+import { AuthGuard } from '@app/shared/guards/auth.guard';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   controllers: [TaskController],
@@ -20,9 +21,10 @@ import { AuthenticationModule } from 'apps/authentication/src/authentication.mod
       useClass: PostgresTaskRepository,
     },
     PostgresTaskRepository,
+    AuthGuard,
+    JwtService
   ],
   imports: [
-    AuthenticationModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',

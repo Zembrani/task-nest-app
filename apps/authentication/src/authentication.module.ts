@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './infrastructure/database/users.entity';
 import { PostgresUserRepository } from './infrastructure/repository/PostgresUserRepository';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './presentation/constants/jwtConstants';
+import { jwtConstants } from '../../../libs/shared/src/constants/jwtConstants';
 
 @Module({
   controllers: [AuthenticationController],

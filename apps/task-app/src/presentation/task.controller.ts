@@ -16,7 +16,7 @@ import {
   UpdateTaskDTO,
 } from '../../../../libs/shared/src/domain/TaskDomain';
 import type { ITaskService } from '../application/services/ITask.service';
-import { AuthGuard } from 'apps/authentication/src/presentation/guards/auth.guard';
+import { AuthGuard } from '@app/shared/guards/auth.guard';
 
 @Controller('tasks')
 export class TaskController {
